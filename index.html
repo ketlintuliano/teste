@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion AI Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f5f5f5;
+            --accent: #d4af37;
+            --accent-hover: #c19b2c;
+            --text: #2d2d2d;
+            --text-light: #666;
+            --border: #e0e0e0;
+            --success: #4caf50;
+            --error: #f44336;
+            --card-bg: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+        
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+        
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        
+        header p {
+            text-align: center;
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+            padding-bottom: 0;
+        }
+        
+        .tab {
+            background: transparent;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 1em;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+        
+        .tab:hover {
+            color: var(--accent);
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--accent);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 15px var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 25px var(--shadow);
+        }
+        
+        .card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card h3 {
+            font-size: 1.3em;
+            margin: 20px 0 15px;
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        input[type="text"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--text-light);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--text);
+        }
+        
+        .btn-danger {
+            background: var(--error);
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+        
+        .item-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .item-card {
+            background: var(--secondary);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .item-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+        
+        .item-card h4 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .item-card p {
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .drop-zone {
+            border: 3px dashed var(--border);
+            border-radius: 12px;
+            padding: 60px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: var(--accent);
+            background: rgba(212, 175, 55, 0.05);
+            transform: scale(1.02);
+        }
+        
+        .drop-zone:hover {
+            border-color: var(--accent);
+        }
+        
+        .drop-zone-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            opacity: 0.6;
+        }
+        
+        .drop-zone p {
+            font-size: 1.1em;
+            color: var(--text-light);
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            background: white;
+        }
+        
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--error);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+        
+        .preview-item:hover .remove-btn {
+            opacity: 1;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid var(--success);
+        }
+        
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid var(--error);
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .scenario-preview {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .scenario-option {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .scenario-option:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .scenario-option.selected {
+            border-color: var(--accent);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .scenario-option h4 {
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .generation-result {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--secondary);
+            border-radius: 10px;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+        
+        .result-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            flex: 1;
+            min-width: 150px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .stat-card .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+        
+        .empty-state-icon {
+            font-size: 4em;
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        #apiKeySetup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        #apiKeySetup .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        #apiKeySetup h2 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+        }
+        
+        .model-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .model-toggle input[type="checkbox"] {
+            width: auto;
+        }
+        
+        .model-toggle label {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            header h1 {
+                font-size: 2em;
+            }
+            
+            header > .container > div {
+                flex-direction: column !important;
+                gap: 15px;
+            }
+            
+            header > .container > div > div:last-child {
+                text-align: center !important;
+            }
+            
+            .tabs {
+                gap: 5px;
+            }
+            
+            .tab {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .item-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- API Key Setup Modal -->
+    <div id="apiKeySetup" style="display: none;">
+        <div class="modal-content">
+            <h2>🔑 Configuração da API</h2>
+            <p style="margin-bottom: 20px; color: var(--text-light);">
+                Configure sua chave de API da OpenAI para começar a gerar imagens
+            </p>
+            <div class="form-group">
+                <label>Chave da API OpenAI</label>
+                <input type="password" id="apiKeyInput" placeholder="sk-...">
+            </div>
+            <button class="btn" onclick="saveApiKey()">Salvar e Começar</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>✨ Fashion AI Studio</h1>
+                    <p>Sistema profissional de geração de imagens para e-commerce</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 8px; font-size: 0.9em;">
+                        <div>💾 Auto-Save Ativo</div>
+                        <div id="lastSavedHeader" style="font-size: 0.85em; opacity: 0.8; margin-top: 3px;">
+                            Salvamento automático
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats Dashboard -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="statsModels">0</div>
+                <div class="label">Modelos</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="statsScenarios">0</div>
+                <div class="label">Cenários</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="statsClothes">0</div>
+                <div class="label">Peças</div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('config')">⚙️ Configurações</button>
+            <button class="tab" onclick="switchTab('models')">👤 Modelos</button>
+            <button class="tab" onclick="switchTab('scenarios')">📸 Cenários</button>
+            <button class="tab" onclick="switchTab('clothes')">👔 Peças de Roupa</button>
+            <button class="tab" onclick="switchTab('generate')">🎨 Gerar Imagens</button>
+        </div>
+
+        <!-- Tab: Configurações -->
+        <div id="tabConfig" class="tab-content active">
+            <div class="card">
+                <h2>⚙️ Configurações do Sistema</h2>
+                
+                <div class="alert alert-info">
+                    <span>💾</span>
+                    <div>
+                        <strong>Auto-Save Ativo!</strong> Todos os seus dados são salvos automaticamente no navegador a cada 30 segundos e sempre que você faz alterações. Você não precisa exportar manualmente, mas pode fazer backup exportando quando quiser.
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Chave da API OpenAI</label>
+                    <input type="password" id="configApiKey" placeholder="sk-...">
+                    <small style="color: var(--text-light); display: block; margin-top: 5px;">
+                        Sua chave é armazenada localmente e nunca é compartilhada
+                    </small>
+                </div>
+                
+                <button class="btn" onclick="saveConfig()">💾 Salvar Configurações</button>
+                <button class="btn btn-secondary" onclick="exportData()">📥 Exportar Backup</button>
+                <button class="btn btn-secondary" onclick="importData()">📤 Importar Backup</button>
+                <input type="file" id="importFile" style="display: none;" accept=".json" onchange="handleImport(event)">
+            </div>
+        </div>
+
+        <!-- Tab: Modelos -->
+        <div id="tabModels" class="tab-content">
+            <div class="card">
+                <h2>👤 Gerenciamento de Modelos</h2>
+                <p style="color: var(--text-light); margin-bottom: 20px;">
+                    Crie e personalize suas modelos virtuais com características únicas
+                </p>
+                
+                <div class="form-group">
+                    <label>Nome da Modelo</label>
+                    <input type="text" id="modelName" placeholder="Ex: Sofia Elegance">
+                </div>
+                
+                <div class="form-group">
+                    <label>Foto de Referência da Modelo (Opcional mas Recomendado)</label>
+                    <input type="file" id="modelPhoto" accept="image/*">
+                    <small style="color: var(--text-light); display: block; margin-top: 5px;">
+                        📸 A IA analisará a foto para criar uma descrição precisa e consistente
+                    </small>
+                    <div id="modelPhotoPreview" style="margin-top: 10px;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descrição Física (Gerada por IA ou Manual)</label>
+                    <textarea id="modelDescription" placeholder="A IA gerará automaticamente se você enviar uma foto, ou você pode escrever manualmente..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Estilo Pessoal</label>
+                    <input type="text" id="modelStyle" placeholder="Ex: Moderno minimalista, bohemian chic, urbano sofisticado...">
+                </div>
+                
+                <div class="form-group">
+                    <label>Expressão Padrão</label>
+                    <select id="modelExpression">
+                        <option value="natural smile">Sorriso natural</option>
+                        <option value="subtle smile">Sorriso sutil</option>
+                        <option value="serious">Sério</option>
+                        <option value="confident">Confiante</option>
+                        <option value="friendly">Amigável</option>
+                        <option value="elegant">Elegante</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="addModel()" id="addModelBtn">➕ Adicionar Modelo</button>
+                
+                <div id="modelsList" class="item-list"></div>
+            </div>
+        </div>
+
+        <!-- Tab: Cenários -->
+        <div id="tabScenarios" class="tab-content">
+            <div class="card">
+                <h2>📸 Gerenciamento de Cenários</h2>
+                <p style="color: var(--text-light); margin-bottom: 20px;">
+                    Defina ambientes, poses e estilos fotográficos para suas campanhas
+                </p>
+                
+                <div class="form-group">
+                    <label>Nome do Cenário</label>
+                    <input type="text" id="scenarioName" placeholder="Ex: Estúdio Minimalista">
+                </div>
+                
+                <div class="form-group">
+                    <label>Foto de Referência do Cenário (Opcional mas Recomendado)</label>
+                    <input type="file" id="scenarioPhoto" accept="image/*">
+                    <small style="color: var(--text-light); display: block; margin-top: 5px;">
+                        📸 A IA analisará o ambiente para criar uma descrição precisa
+                    </small>
+                    <div id="scenarioPhotoPreview" style="margin-top: 10px;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tipo de Foto</label>
+                    <select id="scenarioType">
+                        <option value="model">Modelo Vestindo a Peça</option>
+                        <option value="flat_lay">Foto Flat Lay (Roupa no Chão)</option>
+                        <option value="both">Ambos</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descrição do Ambiente (Gerada por IA ou Manual)</label>
+                    <textarea id="scenarioEnvironment" placeholder="A IA gerará automaticamente se você enviar uma foto, ou você pode escrever manualmente..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Pose/Ângulo</label>
+                    <input type="text" id="scenarioPose" placeholder="Ex: De pé, mãos nos bolsos, olhando para câmera">
+                </div>
+                
+                <div class="form-group">
+                    <label>Estilo Fotográfico</label>
+                    <select id="scenarioPhotoStyle">
+                        <option value="professional studio">Estúdio Profissional</option>
+                        <option value="natural light">Luz Natural</option>
+                        <option value="editorial">Editorial</option>
+                        <option value="lifestyle">Lifestyle</option>
+                        <option value="minimalist">Minimalista</option>
+                        <option value="vintage">Vintage</option>
+                        <option value="modern">Moderno</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="addScenario()" id="addScenarioBtn">➕ Adicionar Cenário</button>
+                
+                <div id="scenariosList" class="item-list"></div>
+            </div>
+        </div>
+
+        <!-- Tab: Peças de Roupa -->
+        <div id="tabClothes" class="tab-content">
+            <div class="card">
+                <h2>👔 Upload de Peças de Roupa</h2>
+                <p style="color: var(--text-light); margin-bottom: 20px;">
+                    Arraste e solte fotos das suas peças para a nova campanha. A IA analisará cada peça automaticamente.
+                </p>
+                
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-icon">📸</div>
+                    <p><strong>Arraste suas fotos aqui</strong> ou clique para selecionar</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;">Aceita JPG, PNG - Múltiplas fotos</p>
+                </div>
+                <input type="file" id="clothesInput" multiple accept="image/*" style="display: none;">
+                
+                <div id="clothesPreview" class="preview-grid"></div>
+                
+                <div id="clothesDetails" style="margin-top: 20px;"></div>
+                
+                <button class="btn btn-danger" onclick="clearClothes()" style="margin-top: 20px;" id="clearClothesBtn">
+                    🗑️ Limpar Todas as Peças
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab: Gerar Imagens -->
+        <div id="tabGenerate" class="tab-content">
+            <div class="card">
+                <h2>🎨 Geração de Imagens</h2>
+                
+                <div class="alert alert-info">
+                    <span>💡</span>
+                    <span>Selecione os modelos e cenários que deseja usar nesta campanha</span>
+                </div>
+                
+                <h3>Selecionar Modelos</h3>
+                <div id="generateModelsSelection"></div>
+                
+                <h3>Selecionar Cenários</h3>
+                <div id="generateScenariosSelection"></div>
+                
+                <div class="form-group">
+                    <label>Instruções Adicionais (Opcional)</label>
+                    <textarea id="generateInstructions" placeholder="Adicione instruções específicas para esta campanha..."></textarea>
+                </div>
+                
+                <button class="btn" onclick="generateImages()" id="generateBtn">
+                    🎨 Gerar Imagens da Campanha
+                </button>
+                
+                <div id="generationResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Management
+        const Storage = {
+            get(key) {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            },
+            set(key, value) {
+                localStorage.setItem(key, JSON.stringify(value));
+                updateLastSaved();
+            },
+            getApiKey() {
+                return localStorage.getItem('openai_api_key');
+            },
+            setApiKey(key) {
+                localStorage.setItem('openai_api_key', key);
+            }
+        };
+
+        // Auto-save system
+        let autoSaveInterval;
+        let hasUnsavedChanges = false;
+
+        function updateLastSaved() {
+            const now = new Date();
+            localStorage.setItem('last_saved', now.toISOString());
+            hasUnsavedChanges = false;
+            showSaveStatus('success');
+            
+            // Update header
+            const headerEl = document.getElementById('lastSavedHeader');
+            if (headerEl) {
+                headerEl.textContent = `Último save: ${now.toLocaleTimeString()}`;
+            }
+        }
+
+        function markUnsavedChanges() {
+            hasUnsavedChanges = true;
+        }
+
+        function showSaveStatus(status) {
+            let statusEl = document.getElementById('saveStatus');
+            if (!statusEl) {
+                statusEl = document.createElement('div');
+                statusEl.id = 'saveStatus';
+                statusEl.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; border-radius: 8px; font-size: 0.9em; z-index: 1000; transition: opacity 0.3s;';
+                document.body.appendChild(statusEl);
+            }
+            
+            if (status === 'success') {
+                const lastSaved = new Date(localStorage.getItem('last_saved'));
+                statusEl.textContent = '✓ Salvo automaticamente às ' + lastSaved.toLocaleTimeString();
+                statusEl.style.background = '#4caf50';
+                statusEl.style.color = 'white';
+            } else if (status === 'saving') {
+                statusEl.textContent = '💾 Salvando...';
+                statusEl.style.background = '#2196f3';
+                statusEl.style.color = 'white';
+            }
+            
+            statusEl.style.opacity = '1';
+            setTimeout(() => {
+                statusEl.style.opacity = '0';
+            }, 3000);
+        }
+
+        // Warn before leaving if there are unsaved changes
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = 'Você tem alterações não salvas. Tem certeza que deseja sair?';
+                return e.returnValue;
+            }
+        });
+
+        // Auto-save every 30 seconds
+        function startAutoSave() {
+            autoSaveInterval = setInterval(() => {
+                if (hasUnsavedChanges) {
+                    showSaveStatus('saving');
+                    // Data is already saved in localStorage, just update status
+                    updateLastSaved();
+                }
+            }, 30000);
+        }
+
+        // Data structures
+        let data = {
+            models: Storage.get('fashion_models') || [],
+            scenarios: Storage.get('fashion_scenarios') || [],
+            clothes: Storage.get('fashion_clothes') || []
+        };
+
+        // Initialize
+        function init() {
+            const apiKey = Storage.getApiKey();
+            if (!apiKey) {
+                document.getElementById('apiKeySetup').style.display = 'flex';
+            }
+            
+            loadConfig();
+            renderModels();
+            renderScenarios();
+            renderClothes();
+            updateStats();
+            setupDropZone();
+            setupModelPhotoPreview();
+            setupScenarioPhotoPreview();
+            startAutoSave();
+            
+            // Show last saved time
+            const lastSaved = localStorage.getItem('last_saved');
+            if (lastSaved) {
+                const date = new Date(lastSaved);
+                const headerEl = document.getElementById('lastSavedHeader');
+                if (headerEl) {
+                    headerEl.textContent = `Último save: ${date.toLocaleTimeString()}`;
+                }
+                showSaveStatus('success');
+            }
+        }
+
+        function setupModelPhotoPreview() {
+            const input = document.getElementById('modelPhoto');
+            if (!input) return;
+            
+            input.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const preview = document.getElementById('modelPhotoPreview');
+                    preview.innerHTML = `
+                        <div style="display: flex; gap: 15px; align-items: start;">
+                            <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border);">
+                            <div style="flex: 1;">
+                                <p style="color: var(--text-light); font-size: 0.9em; margin-bottom: 10px;">
+                                    🤖 Analisando foto com IA...
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    try {
+                        const apiKey = Storage.getApiKey();
+                        if (!apiKey) {
+                            showAlert('error', 'Configure sua chave de API primeiro!');
+                            return;
+                        }
+                        
+                        const description = await analyzeModel(apiKey, e.target.result);
+                        document.getElementById('modelDescription').value = description;
+                        
+                        preview.innerHTML = `
+                            <div style="display: flex; gap: 15px; align-items: start;">
+                                <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border);">
+                                <div style="flex: 1;">
+                                    <p style="color: var(--success); font-size: 0.9em; margin-bottom: 5px;">
+                                        ✓ Análise concluída! Descrição gerada automaticamente.
+                                    </p>
+                                    <p style="color: var(--text-light); font-size: 0.85em;">
+                                        Você pode editar a descrição no campo abaixo se desejar.
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                    } catch (error) {
+                        showAlert('error', 'Erro ao analisar foto: ' + error.message);
+                        preview.innerHTML = '';
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function setupScenarioPhotoPreview() {
+            const input = document.getElementById('scenarioPhoto');
+            if (!input) return;
+            
+            input.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const preview = document.getElementById('scenarioPhotoPreview');
+                    preview.innerHTML = `
+                        <div style="display: flex; gap: 15px; align-items: start;">
+                            <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border);">
+                            <div style="flex: 1;">
+                                <p style="color: var(--text-light); font-size: 0.9em; margin-bottom: 10px;">
+                                    🤖 Analisando cenário com IA...
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    try {
+                        const apiKey = Storage.getApiKey();
+                        if (!apiKey) {
+                            showAlert('error', 'Configure sua chave de API primeiro!');
+                            return;
+                        }
+                        
+                        const description = await analyzeScenario(apiKey, e.target.result);
+                        document.getElementById('scenarioEnvironment').value = description;
+                        
+                        preview.innerHTML = `
+                            <div style="display: flex; gap: 15px; align-items: start;">
+                                <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border);">
+                                <div style="flex: 1;">
+                                    <p style="color: var(--success); font-size: 0.9em; margin-bottom: 5px;">
+                                        ✓ Análise concluída! Descrição gerada automaticamente.
+                                    </p>
+                                    <p style="color: var(--text-light); font-size: 0.85em;">
+                                        Você pode editar a descrição no campo abaixo se desejar.
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                    } catch (error) {
+                        showAlert('error', 'Erro ao analisar foto: ' + error.message);
+                        preview.innerHTML = '';
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function analyzeModel(apiKey, imageDataUrl) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    messages: [{
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'text',
+                                text: 'Analyze this person for fashion model consistency. Describe in detail: gender, approximate age, body type/build, height impression, skin tone, facial features, hair (color, length, style), eyes, distinctive features, overall appearance. Be very specific and detailed as this will be used to generate consistent fashion photography of this exact model. Focus on physical characteristics that make this person unique and recognizable.'
+                            },
+                            {
+                                type: 'image_url',
+                                image_url: {
+                                    url: imageDataUrl
+                                }
+                            }
+                        ]
+                    }],
+                    max_tokens: 500
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'Erro ao analisar imagem');
+            }
+            
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        async function analyzeScenario(apiKey, imageDataUrl) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    messages: [{
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'text',
+                                text: 'Analyze this location/setting for fashion photography. Describe in detail: the environment/location, lighting (type, direction, quality), background elements, colors and tones, atmosphere/mood, spatial composition, any props or furniture, floor/surface, walls, overall aesthetic style. Be very specific as this will be used to recreate this exact setting in fashion photography. Focus on elements that define the visual character of this space.'
+                            },
+                            {
+                                type: 'image_url',
+                                image_url: {
+                                    url: imageDataUrl
+                                }
+                            }
+                        ]
+                    }],
+                    max_tokens: 500
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'Erro ao analisar imagem');
+            }
+            
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (!key) {
+                alert('Por favor, insira uma chave de API válida');
+                return;
+            }
+            Storage.setApiKey(key);
+            document.getElementById('apiKeySetup').style.display = 'none';
+            showAlert('success', 'Chave de API configurada com sucesso!');
+        }
+
+        function loadConfig() {
+            const apiKey = Storage.getApiKey();
+            if (apiKey) {
+                document.getElementById('configApiKey').value = apiKey;
+            }
+        }
+
+        function saveConfig() {
+            const apiKey = document.getElementById('configApiKey').value.trim();
+            if (apiKey) {
+                Storage.setApiKey(apiKey);
+                showAlert('success', 'Configurações salvas com sucesso!');
+            } else {
+                showAlert('error', 'Por favor, insira uma chave de API');
+            }
+        }
+
+        // Tab Management
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).classList.add('active');
+            
+            // Refresh content if needed
+            if (tabName === 'generate') {
+                renderGenerateSelections();
+            }
+        }
+
+        // Models Management
+        function addModel() {
+            const name = document.getElementById('modelName').value.trim();
+            const description = document.getElementById('modelDescription').value.trim();
+            const style = document.getElementById('modelStyle').value.trim();
+            const expression = document.getElementById('modelExpression').value;
+            
+            if (!name || !description) {
+                showAlert('error', 'Por favor, preencha nome e descrição da modelo');
+                return;
+            }
+            
+            const btn = document.getElementById('addModelBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Salvando...';
+            
+            // Get photo if uploaded
+            const photoInput = document.getElementById('modelPhoto');
+            let photoDataUrl = null;
+            
+            if (photoInput.files && photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    photoDataUrl = e.target.result;
+                    saveModel(name, description, style, expression, photoDataUrl);
+                };
+                reader.readAsDataURL(photoInput.files[0]);
+            } else {
+                saveModel(name, description, style, expression, null);
+            }
+        }
+        
+        function saveModel(name, description, style, expression, photoDataUrl) {
+            const model = {
+                id: Date.now(),
+                name,
+                description,
+                style,
+                expression,
+                photoDataUrl,
+                createdAt: new Date().toISOString()
+            };
+            
+            data.models.push(model);
+            Storage.set('fashion_models', data.models);
+            markUnsavedChanges();
+            
+            // Clear form
+            document.getElementById('modelName').value = '';
+            document.getElementById('modelDescription').value = '';
+            document.getElementById('modelStyle').value = '';
+            document.getElementById('modelPhoto').value = '';
+            document.getElementById('modelPhotoPreview').innerHTML = '';
+            
+            const btn = document.getElementById('addModelBtn');
+            btn.disabled = false;
+            btn.innerHTML = '➕ Adicionar Modelo';
+            
+            renderModels();
+            updateStats();
+            showAlert('success', `Modelo "${name}" adicionada com sucesso!`);
+        }
+
+        function editModel(id) {
+            const model = data.models.find(m => m.id === id);
+            if (!model) return;
+            
+            document.getElementById('modelName').value = model.name;
+            document.getElementById('modelDescription').value = model.description;
+            document.getElementById('modelStyle').value = model.style;
+            document.getElementById('modelExpression').value = model.expression;
+            
+            deleteModel(id);
+            
+            // Scroll to form
+            document.querySelector('#tabModels .card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteModel(id) {
+            if (!confirm('Tem certeza que deseja excluir esta modelo?')) return;
+            
+            data.models = data.models.filter(m => m.id !== id);
+            Storage.set('fashion_models', data.models);
+            markUnsavedChanges();
+            renderModels();
+            updateStats();
+            showAlert('success', 'Modelo excluída');
+        }
+
+        function renderModels() {
+            const container = document.getElementById('modelsList');
+            
+            if (data.models.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👤</div>
+                        <h3>Nenhuma modelo cadastrada</h3>
+                        <p>Adicione sua primeira modelo para começar</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = data.models.map(model => `
+                <div class="item-card">
+                    ${model.photoDataUrl ? `
+                        <img src="${model.photoDataUrl}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+                    ` : ''}
+                    <h4>${model.name}</h4>
+                    <p><strong>Descrição:</strong> ${model.description.substring(0, 100)}${model.description.length > 100 ? '...' : ''}</p>
+                    ${model.style ? `<p><strong>Estilo:</strong> ${model.style}</p>` : ''}
+                    <p><strong>Expressão:</strong> ${model.expression}</p>
+                    ${model.photoDataUrl ? '<p style="color: var(--success); font-size: 0.9em;">✓ Com foto de referência (IA analisada)</p>' : ''}
+                    <div class="item-actions">
+                        <button class="btn btn-small btn-secondary" onclick="editModel(${model.id})">✏️ Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteModel(${model.id})">🗑️ Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Scenarios Management
+        function addScenario() {
+            const name = document.getElementById('scenarioName').value.trim();
+            const type = document.getElementById('scenarioType').value;
+            const environment = document.getElementById('scenarioEnvironment').value.trim();
+            const pose = document.getElementById('scenarioPose').value.trim();
+            const photoStyle = document.getElementById('scenarioPhotoStyle').value;
+            
+            if (!name || !environment) {
+                showAlert('error', 'Por favor, preencha nome e descrição do ambiente');
+                return;
+            }
+            
+            const btn = document.getElementById('addScenarioBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Salvando...';
+            
+            // Get photo if uploaded
+            const photoInput = document.getElementById('scenarioPhoto');
+            let photoDataUrl = null;
+            
+            if (photoInput.files && photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    photoDataUrl = e.target.result;
+                    saveScenario(name, type, environment, pose, photoStyle, photoDataUrl);
+                };
+                reader.readAsDataURL(photoInput.files[0]);
+            } else {
+                saveScenario(name, type, environment, pose, photoStyle, null);
+            }
+        }
+        
+        function saveScenario(name, type, environment, pose, photoStyle, photoDataUrl) {
+            const scenario = {
+                id: Date.now(),
+                name,
+                type,
+                environment,
+                pose,
+                photoStyle,
+                photoDataUrl,
+                createdAt: new Date().toISOString()
+            };
+            
+            data.scenarios.push(scenario);
+            Storage.set('fashion_scenarios', data.scenarios);
+            markUnsavedChanges();
+            
+            // Clear form
+            document.getElementById('scenarioName').value = '';
+            document.getElementById('scenarioEnvironment').value = '';
+            document.getElementById('scenarioPose').value = '';
+            document.getElementById('scenarioPhoto').value = '';
+            document.getElementById('scenarioPhotoPreview').innerHTML = '';
+            
+            const btn = document.getElementById('addScenarioBtn');
+            btn.disabled = false;
+            btn.innerHTML = '➕ Adicionar Cenário';
+            
+            renderScenarios();
+            updateStats();
+            showAlert('success', `Cenário "${name}" adicionado com sucesso!`);
+        }
+
+        function editScenario(id) {
+            const scenario = data.scenarios.find(s => s.id === id);
+            if (!scenario) return;
+            
+            document.getElementById('scenarioName').value = scenario.name;
+            document.getElementById('scenarioType').value = scenario.type;
+            document.getElementById('scenarioEnvironment').value = scenario.environment;
+            document.getElementById('scenarioPose').value = scenario.pose;
+            document.getElementById('scenarioPhotoStyle').value = scenario.photoStyle;
+            
+            deleteScenario(id);
+            
+            document.querySelector('#tabScenarios .card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteScenario(id) {
+            if (!confirm('Tem certeza que deseja excluir este cenário?')) return;
+            
+            data.scenarios = data.scenarios.filter(s => s.id !== id);
+            Storage.set('fashion_scenarios', data.scenarios);
+            markUnsavedChanges();
+            renderScenarios();
+            updateStats();
+            showAlert('success', 'Cenário excluído');
+        }
+
+        function renderScenarios() {
+            const container = document.getElementById('scenariosList');
+            
+            if (data.scenarios.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📸</div>
+                        <h3>Nenhum cenário cadastrado</h3>
+                        <p>Adicione seu primeiro cenário para começar</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = data.scenarios.map(scenario => `
+                <div class="item-card">
+                    ${scenario.photoDataUrl ? `
+                        <img src="${scenario.photoDataUrl}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+                    ` : ''}
+                    <h4>${scenario.name}</h4>
+                    <p><strong>Tipo:</strong> ${getScenarioTypeLabel(scenario.type)}</p>
+                    <p><strong>Ambiente:</strong> ${scenario.environment.substring(0, 80)}${scenario.environment.length > 80 ? '...' : ''}</p>
+                    ${scenario.pose ? `<p><strong>Pose:</strong> ${scenario.pose}</p>` : ''}
+                    <p><strong>Estilo:</strong> ${scenario.photoStyle}</p>
+                    ${scenario.photoDataUrl ? '<p style="color: var(--success); font-size: 0.9em;">✓ Com foto de referência (IA analisada)</p>' : ''}
+                    <div class="item-actions">
+                        <button class="btn btn-small btn-secondary" onclick="editScenario(${scenario.id})">✏️ Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteScenario(${scenario.id})">🗑️ Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getScenarioTypeLabel(type) {
+            const labels = {
+                'model': 'Modelo Vestindo',
+                'flat_lay': 'Flat Lay',
+                'both': 'Ambos'
+            };
+            return labels[type] || type;
+        }
+
+        // Clothes Management
+        function setupDropZone() {
+            const dropZone = document.getElementById('dropZone');
+            const input = document.getElementById('clothesInput');
+            
+            dropZone.addEventListener('click', () => input.click());
+            
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over');
+            });
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            input.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        async function handleFiles(files) {
+            const fileArray = Array.from(files);
+            const apiKey = Storage.getApiKey();
+            
+            if (!apiKey) {
+                showAlert('error', 'Configure sua chave de API primeiro!');
+                return;
+            }
+            
+            showAlert('info', `Analisando ${fileArray.length} peça(s) com IA...`);
+            
+            for (const file of fileArray) {
+                if (!file.type.startsWith('image/')) continue;
+                
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        // Analyze the clothing item with GPT-4 Vision
+                        const description = await analyzeClothing(apiKey, e.target.result);
+                        
+                        const cloth = {
+                            id: Date.now() + Math.random(),
+                            name: file.name,
+                            dataUrl: e.target.result,
+                            aiDescription: description,
+                            uploadedAt: new Date().toISOString()
+                        };
+                        
+                        data.clothes.push(cloth);
+                        Storage.set('fashion_clothes', data.clothes);
+                        markUnsavedChanges();
+                        renderClothes();
+                        updateStats();
+                    } catch (error) {
+                        console.error('Erro ao analisar roupa:', error);
+                        showAlert('error', `Erro ao analisar ${file.name}: ${error.message}`);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            showAlert('success', `${fileArray.length} peça(s) analisada(s) e adicionada(s)!`);
+        }
+
+        async function analyzeClothing(apiKey, imageDataUrl) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    messages: [{
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'text',
+                                text: 'Analyze this clothing item in detail. Describe: type of garment, color(s), pattern/print, material/texture, style, cut/fit, details (buttons, pockets, zippers, etc), and any unique features. Be very specific and detailed as this will be used to generate fashion photography. Focus only on the clothing item itself.'
+                            },
+                            {
+                                type: 'image_url',
+                                image_url: {
+                                    url: imageDataUrl
+                                }
+                            }
+                        ]
+                    }],
+                    max_tokens: 500
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'Erro ao analisar imagem');
+            }
+            
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        function removeCloth(id) {
+            data.clothes = data.clothes.filter(c => c.id !== id);
+            Storage.set('fashion_clothes', data.clothes);
+            markUnsavedChanges();
+            renderClothes();
+            updateStats();
+        }
+
+        function clearClothes() {
+            if (!confirm('Tem certeza que deseja remover todas as peças?')) return;
+            
+            data.clothes = [];
+            Storage.set('fashion_clothes', data.clothes);
+            markUnsavedChanges();
+            renderClothes();
+            updateStats();
+            showAlert('success', 'Todas as peças foram removidas');
+        }
+
+        function renderClothes() {
+            const container = document.getElementById('clothesPreview');
+            const detailsContainer = document.getElementById('clothesDetails');
+            
+            if (data.clothes.length === 0) {
+                container.innerHTML = '';
+                detailsContainer.innerHTML = '';
+                return;
+            }
+            
+            container.innerHTML = data.clothes.map(cloth => `
+                <div class="preview-item" onclick="showClothDetails(${cloth.id})" style="cursor: pointer;">
+                    <img src="${cloth.dataUrl}" alt="${cloth.name}">
+                    <button class="remove-btn" onclick="event.stopPropagation(); removeCloth(${cloth.id})">×</button>
+                    ${cloth.aiDescription ? 
+                        '<div style="position: absolute; bottom: 5px; left: 5px; background: rgba(76, 175, 80, 0.9); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7em; font-weight: 500;">✓ Analisada</div>' : 
+                        '<div style="position: absolute; bottom: 5px; left: 5px; background: rgba(255, 152, 0, 0.9); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7em; font-weight: 500;">⏳ Analisando...</div>'
+                    }
+                </div>
+            `).join('');
+            
+            // Show details of first item by default if available
+            if (data.clothes.length > 0 && data.clothes[0].aiDescription) {
+                showClothDetails(data.clothes[0].id);
+            }
+        }
+        
+        function showClothDetails(clothId) {
+            const cloth = data.clothes.find(c => c.id === clothId);
+            if (!cloth) return;
+            
+            const detailsContainer = document.getElementById('clothesDetails');
+            
+            if (!cloth.aiDescription) {
+                detailsContainer.innerHTML = `
+                    <div class="alert alert-info">
+                        <span>⏳</span>
+                        <span>Esta peça ainda está sendo analisada pela IA...</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            detailsContainer.innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 10px; border: 2px solid var(--accent);">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">📋 Análise da IA: ${cloth.name}</h4>
+                    <div style="display: flex; gap: 20px; align-items: start;">
+                        <img src="${cloth.dataUrl}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border);">
+                        <div style="flex: 1;">
+                            <p style="color: var(--text); line-height: 1.6; white-space: pre-wrap;">${cloth.aiDescription}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate Images
+        function renderGenerateSelections() {
+            // Render models selection
+            const modelsContainer = document.getElementById('generateModelsSelection');
+            if (data.models.length === 0) {
+                modelsContainer.innerHTML = '<p style="color: var(--text-light);">Nenhuma modelo cadastrada. Vá para a aba Modelos para adicionar.</p>';
+            } else {
+                modelsContainer.innerHTML = data.models.map(model => `
+                    <div class="model-toggle">
+                        <input type="checkbox" id="model_${model.id}" value="${model.id}" checked>
+                        <label for="model_${model.id}">${model.name}</label>
+                    </div>
+                `).join('');
+            }
+            
+            // Render scenarios selection
+            const scenariosContainer = document.getElementById('generateScenariosSelection');
+            if (data.scenarios.length === 0) {
+                scenariosContainer.innerHTML = '<p style="color: var(--text-light);">Nenhum cenário cadastrado. Vá para a aba Cenários para adicionar.</p>';
+            } else {
+                scenariosContainer.innerHTML = data.scenarios.map(scenario => `
+                    <div class="model-toggle">
+                        <input type="checkbox" id="scenario_${scenario.id}" value="${scenario.id}" checked>
+                        <label for="scenario_${scenario.id}">${scenario.name} (${getScenarioTypeLabel(scenario.type)})</label>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function generateImages() {
+            const apiKey = Storage.getApiKey();
+            if (!apiKey) {
+                showAlert('error', 'Configure sua chave de API primeiro!');
+                switchTab('config');
+                return;
+            }
+            
+            if (data.clothes.length === 0) {
+                showAlert('error', 'Adicione pelo menos uma peça de roupa!');
+                switchTab('clothes');
+                return;
+            }
+            
+            // Check if all clothes have been analyzed
+            const unanalyzedClothes = data.clothes.filter(c => !c.aiDescription);
+            if (unanalyzedClothes.length > 0) {
+                showAlert('error', `${unanalyzedClothes.length} peça(s) ainda está(ão) sendo analisada(s). Aguarde um momento.`);
+                return;
+            }
+            
+            // Get selected models
+            const selectedModels = data.models.filter(model => {
+                const checkbox = document.getElementById(`model_${model.id}`);
+                return checkbox && checkbox.checked;
+            });
+            
+            if (selectedModels.length === 0) {
+                showAlert('error', 'Selecione pelo menos uma modelo!');
+                return;
+            }
+            
+            // Get selected scenarios
+            const selectedScenarios = data.scenarios.filter(scenario => {
+                const checkbox = document.getElementById(`scenario_${scenario.id}`);
+                return checkbox && checkbox.checked;
+            });
+            
+            if (selectedScenarios.length === 0) {
+                showAlert('error', 'Selecione pelo menos um cenário!');
+                return;
+            }
+            
+            const instructions = document.getElementById('generateInstructions').value.trim();
+            
+            // Build all prompts first for preview
+            const promptsData = [];
+            
+            for (const cloth of data.clothes) {
+                for (const scenario of selectedScenarios) {
+                    if (scenario.type === 'model' || scenario.type === 'both') {
+                        const model = selectedModels[Math.floor(Math.random() * selectedModels.length)];
+                        const prompt = buildPrompt(cloth, model, scenario, instructions, 'model');
+                        promptsData.push({
+                            id: Date.now() + Math.random(),
+                            cloth,
+                            model,
+                            scenario,
+                            type: 'model',
+                            prompt
+                        });
+                    }
+                    
+                    if (scenario.type === 'flat_lay' || scenario.type === 'both') {
+                        const prompt = buildPrompt(cloth, null, scenario, instructions, 'flat_lay');
+                        promptsData.push({
+                            id: Date.now() + Math.random(),
+                            cloth,
+                            scenario,
+                            type: 'flat_lay',
+                            prompt
+                        });
+                    }
+                }
+            }
+            
+            // Store prompts for later use
+            window.currentPrompts = promptsData;
+            
+            // Show prompts preview
+            showPromptsPreview(promptsData);
+        }
+
+        function showPromptsPreview(promptsData) {
+            const resultContainer = document.getElementById('generationResult');
+            
+            resultContainer.innerHTML = `
+                <div class="generation-result">
+                    <h3>📝 Preview dos Prompts (${promptsData.length} imagens serão geradas)</h3>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">
+                        Revise e edite os prompts antes de gerar. Clique em qualquer prompt para editar.
+                    </p>
+                    <div class="prompts-grid" style="display: grid; gap: 20px;">
+                        ${promptsData.map((item, index) => `
+                            <div class="prompt-card" style="background: white; padding: 20px; border-radius: 10px; border: 2px solid var(--border);">
+                                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                                    <img src="${item.cloth.dataUrl}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                                    <div style="flex: 1;">
+                                        <h4 style="margin: 0 0 5px 0; color: var(--primary);">${item.cloth.name}</h4>
+                                        <p style="margin: 0; color: var(--text-light); font-size: 0.9em;">
+                                            ${item.type === 'model' ? `👤 Com ${item.model.name}` : '📸 Flat Lay'} • ${item.scenario.name}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label style="font-size: 0.9em;">Prompt #${index + 1}</label>
+                                    <textarea 
+                                        id="prompt_${item.id}" 
+                                        style="font-size: 0.85em; min-height: 120px;"
+                                    >${item.prompt}</textarea>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top: 30px; display: flex; gap: 15px;">
+                        <button class="btn" onclick="executeGeneration()">
+                            🎨 Gerar ${promptsData.length} Imagens
+                        </button>
+                        <button class="btn btn-secondary" onclick="cancelGeneration()">
+                            ✕ Cancelar
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Scroll to results
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelGeneration() {
+            document.getElementById('generationResult').innerHTML = '';
+            window.currentPrompts = null;
+        }
+
+        async function executeGeneration() {
+            if (!window.currentPrompts) return;
+            
+            const apiKey = Storage.getApiKey();
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Gerando imagens...';
+            
+            const resultContainer = document.getElementById('generationResult');
+            resultContainer.innerHTML = '<div class="generation-result"><p>🎨 Gerando imagens com DALL-E 3...</p><div class="progress-info" id="progressInfo"></div></div>';
+            
+            try {
+                const results = [];
+                const progressInfo = document.getElementById('progressInfo');
+                
+                for (let i = 0; i < window.currentPrompts.length; i++) {
+                    const item = window.currentPrompts[i];
+                    
+                    // Get the edited prompt
+                    const editedPrompt = document.getElementById(`prompt_${item.id}`)?.value || item.prompt;
+                    
+                    progressInfo.innerHTML = `<p style="color: var(--text-light);">Gerando imagem ${i + 1} de ${window.currentPrompts.length}...</p>`;
+                    
+                    try {
+                        const imageUrl = await generateSingleImage(apiKey, editedPrompt);
+                        results.push({
+                            cloth: item.cloth.name,
+                            type: item.type,
+                            model: item.model?.name,
+                            scenario: item.scenario.name,
+                            imageUrl,
+                            prompt: editedPrompt
+                        });
+                    } catch (error) {
+                        console.error(`Erro ao gerar imagem ${i + 1}:`, error);
+                        results.push({
+                            cloth: item.cloth.name,
+                            type: item.type,
+                            model: item.model?.name,
+                            scenario: item.scenario.name,
+                            error: error.message,
+                            prompt: editedPrompt
+                        });
+                    }
+                    
+                    // Small delay between requests to avoid rate limits
+                    if (i < window.currentPrompts.length - 1) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                }
+                
+                displayResults(results);
+                showAlert('success', `Geração concluída! ${results.filter(r => r.imageUrl).length} sucesso(s), ${results.filter(r => r.error).length} erro(s)`);
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                showAlert('error', 'Erro ao gerar imagens: ' + error.message);
+                resultContainer.innerHTML = '';
+            } finally {
+                window.currentPrompts = null;
+            }
+        }
+
+        function buildPrompt(cloth, model, scenario, instructions, type) {
+            let prompt = '';
+            
+            if (type === 'model' && model) {
+                prompt = `Professional fashion e-commerce product photography. `;
+                prompt += `\n\nMODEL (DO NOT MODIFY): ${model.description}. `;
+                prompt += `Style: ${model.style}. `;
+                prompt += `Expression: ${model.expression}. `;
+                prompt += `\n\n⚠️ CRITICAL - CLOTHING ITEM (MUST MATCH EXACTLY, DO NOT MODIFY COLORS, PATTERNS, OR DESIGN): ${cloth.aiDescription}`;
+                prompt += `\nThe model MUST be wearing this EXACT clothing item as described. Do not change or reinterpret the garment's colors, patterns, cut, or any design details. The clothing must be identical to the description.`;
+                prompt += `\n\nSETTING: ${scenario.environment}. `;
+                if (scenario.pose) prompt += `Pose: ${scenario.pose}. `;
+                prompt += `Photography style: ${scenario.photoStyle}. `;
+            } else {
+                prompt = `Professional flat lay fashion photography for e-commerce product showcase. `;
+                prompt += `\n\n⚠️ CRITICAL - CLOTHING ITEM (MUST MATCH EXACTLY, DO NOT MODIFY): ${cloth.aiDescription}`;
+                prompt += `\nThe clothing must be shown exactly as described. Do not change colors, patterns, design, or any details of the garment.`;
+                prompt += `\n\nThe clothing is beautifully arranged and styled. `;
+                prompt += `SETTING: ${scenario.environment}. `;
+                prompt += `Photography style: ${scenario.photoStyle}. `;
+            }
+            
+            if (instructions) {
+                prompt += `\n\nADDITIONAL INSTRUCTIONS: ${instructions}`;
+            }
+            
+            prompt += `\n\n✓ Requirements: High quality, professional lighting, sharp focus, 4K resolution, accurate color reproduction, e-commerce ready, white balance perfect, product photography. The garment must look exactly like the real product the customer will receive.`;
+            
+            return prompt;
+        }
+
+        async function generateSingleImage(apiKey, prompt) {
+            // Note: This is a simplified version. In reality, you would need to:
+            // 1. Upload the clothing image to OpenAI
+            // 2. Use DALL-E 3 or similar with the image as reference
+            // For now, we'll simulate with DALL-E 3 text-only
+            
+            const response = await fetch('https://api.openai.com/v1/images/generations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'dall-e-3',
+                    prompt: prompt,
+                    n: 1,
+                    size: '1024x1024',
+                    quality: 'standard'
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'Erro na API');
+            }
+            
+            const data = await response.json();
+            return data.data[0].url;
+        }
+
+        function displayResults(results) {
+            const container = document.getElementById('generationResult');
+            
+            const successCount = results.filter(r => r.imageUrl).length;
+            const errorCount = results.filter(r => r.error).length;
+            
+            container.innerHTML = `
+                <div class="generation-result">
+                    <h3>✨ Resultados da Geração</h3>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">
+                        ${successCount} imagem(ns) gerada(s) com sucesso ${errorCount > 0 ? `• ${errorCount} erro(s)` : ''}
+                    </p>
+                    <div class="result-grid">
+                        ${results.map((result, index) => `
+                            <div class="result-item">
+                                ${result.imageUrl ? `
+                                    <img src="${result.imageUrl}" alt="${result.cloth}">
+                                    <h4>${result.cloth}</h4>
+                                    <p><strong>Tipo:</strong> ${result.type === 'model' ? '👤 Com Modelo' : '📸 Flat Lay'}</p>
+                                    ${result.model ? `<p><strong>Modelo:</strong> ${result.model}</p>` : ''}
+                                    <p><strong>Cenário:</strong> ${result.scenario}</p>
+                                    <details style="margin-top: 10px;">
+                                        <summary style="cursor: pointer; color: var(--accent); font-size: 0.9em; font-weight: 500;">
+                                            📝 Ver Prompt Usado
+                                        </summary>
+                                        <div style="margin-top: 10px; padding: 10px; background: var(--secondary); border-radius: 6px; font-size: 0.85em; color: var(--text-light); max-height: 200px; overflow-y: auto;">
+                                            ${result.prompt}
+                                        </div>
+                                    </details>
+                                    <button class="btn btn-small" style="margin-top: 10px; width: 100%;" onclick="downloadImage('${result.imageUrl}', '${result.cloth.replace(/[^a-z0-9]/gi, '_')}_${index}')">
+                                        💾 Download
+                                    </button>
+                                ` : `
+                                    <div style="padding: 40px 20px; background: #ffebee; border-radius: 8px; text-align: center;">
+                                        <p style="color: var(--error); margin-bottom: 10px;">❌ Erro ao gerar</p>
+                                        <p style="font-size: 0.9em; color: var(--text-light);">${result.error}</p>
+                                    </div>
+                                    <h4>${result.cloth}</h4>
+                                    <p><strong>Tipo:</strong> ${result.type === 'model' ? '👤 Com Modelo' : '📸 Flat Lay'}</p>
+                                    ${result.model ? `<p><strong>Modelo:</strong> ${result.model}</p>` : ''}
+                                    <p><strong>Cenário:</strong> ${result.scenario}</p>
+                                    <details style="margin-top: 10px;">
+                                        <summary style="cursor: pointer; color: var(--accent); font-size: 0.9em; font-weight: 500;">
+                                            📝 Ver Prompt Tentado
+                                        </summary>
+                                        <div style="margin-top: 10px; padding: 10px; background: var(--secondary); border-radius: 6px; font-size: 0.85em; color: var(--text-light); max-height: 200px; overflow-y: auto;">
+                                            ${result.prompt}
+                                        </div>
+                                    </details>
+                                `}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top: 30px;">
+                        <button class="btn btn-secondary" onclick="document.getElementById('generationResult').innerHTML = ''">
+                            ✕ Fechar Resultados
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function downloadImage(url, filename) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Stats
+        function updateStats() {
+            document.getElementById('statsModels').textContent = data.models.length;
+            document.getElementById('statsScenarios').textContent = data.scenarios.length;
+            document.getElementById('statsClothes').textContent = data.clothes.length;
+        }
+
+        // Alerts
+        function showAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <span>${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>
+                <span>${message}</span>
+            `;
+            
+            const container = document.querySelector('.tab-content.active .card');
+            if (container) {
+                container.insertBefore(alertDiv, container.firstChild);
+                setTimeout(() => alertDiv.remove(), 5000);
+            }
+        }
+
+        // Export/Import
+        function exportData() {
+            const exportData = {
+                models: data.models,
+                scenarios: data.scenarios,
+                clothes: data.clothes,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fashion-ai-studio-backup-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showAlert('success', 'Dados exportados com sucesso!');
+        }
+
+        function importData() {
+            document.getElementById('importFile').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    
+                    if (confirm('Isso irá substituir todos os dados atuais. Continuar?')) {
+                        data.models = imported.models || [];
+                        data.scenarios = imported.scenarios || [];
+                        data.clothes = imported.clothes || [];
+                        
+                        Storage.set('fashion_models', data.models);
+                        Storage.set('fashion_scenarios', data.scenarios);
+                        Storage.set('fashion_clothes', data.clothes);
+                        
+                        renderModels();
+                        renderScenarios();
+                        renderClothes();
+                        updateStats();
+                        
+                        showAlert('success', 'Dados importados com sucesso!');
+                    }
+                } catch (error) {
+                    showAlert('error', 'Erro ao importar dados: arquivo inválido');
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset input
+            event.target.value = '';
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
